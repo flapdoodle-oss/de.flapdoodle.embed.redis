@@ -1,5 +1,5 @@
 #!/bin/sh
-mvn release:clean
-mvn release:prepare
-mvn release:perform
+mvn release:clean -DskipTests=true
+mvn release:prepare -DskipTests=true
+mvn release:perform -DskipTests=true
 
