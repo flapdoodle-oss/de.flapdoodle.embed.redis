@@ -1,5 +1,5 @@
 #!/bin/sh
-mvn release:clean -DskipTests=true
-mvn release:prepare -DskipTests=true
-mvn release:perform -DskipTests=true
+mvn -Dmaven.test.skip=true release:clean
+mvn -Dmaven.test.skip=true release:prepare
+mvn -Dmaven.test.skip=true release:perform
 
