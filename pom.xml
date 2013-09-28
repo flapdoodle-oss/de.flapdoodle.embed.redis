@@ -209,7 +209,7 @@
         <!--
           <pushChanges>false</pushChanges>
           -->
-          <arguments>-DskipTests=true</arguments>
+          <arguments>-DskipTests=true ${arguments}</arguments>
         </configuration>
       </plugin>
 		</plugins>
