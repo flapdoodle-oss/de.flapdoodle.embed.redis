@@ -210,8 +210,8 @@
           <pushChanges>false</pushChanges>
         </configuration>
       </plugin>
-		</plugins>
 		-->
+		</plugins>
 	</build>
 
 	<profiles>
