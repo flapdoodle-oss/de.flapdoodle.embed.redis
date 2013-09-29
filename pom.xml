@@ -254,10 +254,6 @@
 					<name>prepareRelease</name>
 					<value>true</value>
 				</property>
-				<property>
-					<name>performRelease</name>
-					<value>true</value>
-				</property>
 			</activation>
 			<build>
 				<plugins>
