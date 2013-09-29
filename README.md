@@ -1,3 +1,8 @@
+# Organisation Flapdoodle OSS
+
+We are now a github organisation. You are invited to participate. :)
+
+
 de.flapdoodle.embed.redis
 =========================
 
@@ -15,3 +20,30 @@ TODO
   not take any arguments (like --port). You need a config file for adjusting the port with 2.4.
   The newer 2.6 versions support both.
 - support more options of redis like bind or slaveof
+
+## Dependencies
+
+### Build on top of
+
+- Embed Process Util [de.flapdoodle.embed.process](https://github.com/flapdoodle-oss/de.flapdoodle.embed.process)
+
+## Howto
+
+### Maven
+
+Stable (Maven Central Repository, Released: 29.09.2013 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.redis/maven-metadata.xml))
+
+	<dependency>
+		<groupId>de.flapdoodle.embed</groupId>
+		<artifactId>de.flapdoodle.embed.redis</artifactId>
+		<version>1.05</version>
+	</dependency>
+
+Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
+
+	<dependency>
+		<groupId>de.flapdoodle.embed</groupId>
+		<artifactId>de.flapdoodle.embed.redis</artifactId>
+		<version>1.06-SNAPSHOT</version>
+	</dependency>
+
