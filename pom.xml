@@ -251,7 +251,7 @@
 			<id>skip-test-in-release</id>
 			<activation>
 				<property>
-					<name>prepareRelease</name>
+					<name>skipTests</name>
 					<value>true</value>
 				</property>
 			</activation>
