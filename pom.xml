@@ -208,12 +208,12 @@
         <version>2.4.1</version>
         -->
         <configuration>
-        <!--
           <pushChanges>false</pushChanges>
+	        <!--
           -->
           <!--
-          -->
           <arguments>-DskipTests=true ${arguments}</arguments>
+          -->
         </configuration>
       </plugin>
 		</plugins>
