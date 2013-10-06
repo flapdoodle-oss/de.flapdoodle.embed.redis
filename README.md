@@ -31,12 +31,12 @@ TODO
 
 ### Maven
 
-Stable (Maven Central Repository, Released: 29.09.2013 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.redis/maven-metadata.xml))
+Stable (Maven Central Repository, Released: 06.10.2013 - wait 24hrs for [maven central](http://repo1.maven.org/maven2/de/flapdoodle/embed/de.flapdoodle.embed.redis/maven-metadata.xml))
 
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.redis</artifactId>
-		<version>1.05</version>
+		<version>1.06</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -44,6 +44,6 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.redis</artifactId>
-		<version>1.06-SNAPSHOT</version>
+		<version>1.07-SNAPSHOT</version>
 	</dependency>
 
