@@ -90,15 +90,6 @@ public class RedisDProcess extends
 			dbFileIsTemp = true;
 		}
 		this.dbFile = tmpDbFile;
-
-		File tmpPidFile;
-		if (config.getStorage().getPidFile() != null) {
-			tmpPidFile = new File(pidFile, config.getStorage()
-					.getPidFile());
-		} else {
-			tmpPidFile = new File(dbDir, "redisd.pid");
-		}
-		this.pidFile = tmpPidFile;
 	}
 
 	@Override
@@ -112,7 +103,7 @@ public class RedisDProcess extends
 			throws IOException {
 		return RedisD.enhanceCommandLinePlattformSpecific(distribution,
 				RedisD.getCommandLine(getConfig(), exe, dbDir, dbFile,
-						pidFile));
+						pidFile()));
 	}
 
 	@Override
@@ -125,9 +116,6 @@ public class RedisDProcess extends
 		if ((dbFile != null) && (dbFileIsTemp)
 				&& (!Files.forceDelete(dbFile))) {
 			logger.warning("Could not delete temp db file: " + dbFile);
-		}
-		if ((pidFile != null) && (!Files.forceDelete(pidFile))) {
-			logger.warning("Could not delete temp pid file: " + pidFile);
 		}
 	}
 
@@ -147,13 +135,11 @@ public class RedisDProcess extends
 				logWatch.getOutput(), -1);
 		if (logWatch.isInitWithSuccess() && redisdProcessId != -1) {
 			setProcessId(redisdProcessId);
-			// write pid to file
-			forceWritePidFile(process.getPid());
 		} else {
 			// fallback, try to read pid file. will throw IOException if
 			// that
 			// fails
-			setProcessId(getPidFromFile(pidFile));
+			setProcessId(getPidFromFile(pidFile()));
 		}
 	}
 
