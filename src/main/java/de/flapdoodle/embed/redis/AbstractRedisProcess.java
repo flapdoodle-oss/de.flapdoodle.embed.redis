@@ -43,6 +43,8 @@ public abstract class AbstractRedisProcess<T extends AbstractRedisConfig, E exte
 
 	boolean stopped = false;
 
+	protected IRuntimeConfig redisCRuntimeConfig;
+
 	public AbstractRedisProcess(Distribution distribution, T config,
 			IRuntimeConfig runtimeConfig, E executable)
 			throws IOException {
@@ -92,10 +94,19 @@ public abstract class AbstractRedisProcess<T extends AbstractRedisConfig, E exte
 
 	protected final boolean sendStopToRedisInstance() {
 		try {
-			boolean result = RedisC.sendShutdown(getConfig().version(),
-					getConfig().net().getServerAddress(), getConfig()
-							.net().getPort(), getConfig()
-							.isNested());
+			boolean result;
+			if (redisCRuntimeConfig == null) {
+				result = RedisC.sendShutdown(getConfig().version(),
+						getConfig().net().getServerAddress(),
+						getConfig().net().getPort(), getConfig()
+								.isNested());
+			} else {
+				result = RedisC.sendShutdown(getConfig().version(),
+						getConfig().net().getServerAddress(),
+						getConfig().net().getPort(), getConfig()
+								.isNested(),
+						redisCRuntimeConfig);
+			}
 			return result;
 		} catch (UnknownHostException e) {
 			logger.log(Level.SEVERE, "sendStop", e);
