@@ -23,20 +23,18 @@ package de.flapdoodle.embed.redis;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
-
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
+import junit.framework.TestCase;
+import redis.clients.jedis.Jedis;
 
 /**
  * Integration test for starting and stopping MongodExecutable
- * 
+ *
  * @author m.joehren
  */
 // CHECKSTYLE:OFF
@@ -99,15 +97,9 @@ public class RedisExecutableTest extends TestCase {
 
 			RedisDExecutable innerExe = RedisDStarter.getInstance(
 					runtimeConfig).prepare(rediddConfig);
-			try {
-				RedisDProcess innerRedisd = innerExe.start();
-			} catch (IOException iox) {
-				innerRedisCouldNotStart = true;
-			} finally {
-				innerExe.stop();
-				Assert.assertTrue("inner Redisd could not start",
-						innerRedisCouldNotStart);
-			}
+			RedisDProcess innerRedisd = innerExe.start();
+			assertFalse(innerRedisd.isProcessRunning());
+			innerExe.stop();
 		}
 
 		redisd.stop();
