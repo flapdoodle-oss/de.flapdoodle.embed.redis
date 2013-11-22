@@ -61,6 +61,10 @@ public class RedisDProcess extends
 
 	}
 
+    public void setRedisCRuntimeConfig(IRuntimeConfig redisCRuntimeConfig) {
+        this.redisCRuntimeConfig = redisCRuntimeConfig;
+    }
+
 	@Override
 	protected void onBeforeProcess(IRuntimeConfig runtimeConfig)
 			throws IOException {

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.IVersion;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.redis.RedisCliExecutable;
@@ -60,6 +61,20 @@ public class RedisC {
 
 	public static boolean sendShutdown(IVersion redisVersion,
 			InetAddress hostname, int port, boolean isNested) {
+		return sendShutdown(redisVersion, hostname, port, isNested,
+				RedisCliStarter.getDefaultInstance());
+	}
+
+	public static boolean sendShutdown(IVersion redisVersion,
+			InetAddress hostname, int port, boolean isNested,
+			IRuntimeConfig runtimeConfig) {
+		return sendShutdown(redisVersion, hostname, port, isNested,
+				RedisCliStarter.getInstance(runtimeConfig));
+	}
+
+	private static boolean sendShutdown(IVersion redisVersion,
+			InetAddress hostname, int port, boolean isNested,
+			RedisCliStarter runtime) {
 		// ensure that we don't get into a stackoverflow when starting the
 		// artifact fails entirely
 		if (isNested) {
@@ -80,8 +95,6 @@ public class RedisC {
 		}
 
 		try {
-			RedisCliStarter runtime = RedisCliStarter
-					.getDefaultInstance();
 			RedisCliConfig redisCliConfig = new RedisCliConfig(
 					redisVersion, new Net(port), new Timeout(
 							WAITING_TIME_SHUTDOWN_IN_MS), true);
@@ -99,4 +112,5 @@ public class RedisC {
 			return false;
 		}
 	}
+
 }
