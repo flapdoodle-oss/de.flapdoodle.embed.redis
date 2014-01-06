@@ -28,19 +28,14 @@ import de.flapdoodle.embed.process.distribution.IVersion;
 public enum Version implements IVersion {
 
 	/**
-	 * new production release
+	 * old 2.6 release release
 	 */
-	V2_4_18("2.4.18_1"),
+	V2_6_14("2.6.14_5"),
 
 	/**
-	 * new developement releases
+	 * new 2.8 release
 	 */
-	@Deprecated
-	V2_6_10("2.6.10"),
-	/**
-	 * newest developement release
-	 */
-	V2_6_14("2.6.14_5"), ;
+	V2_8_3("2.8.3_1"), ;
 
 	private final String specificVersion;
 
@@ -60,15 +55,16 @@ public enum Version implements IVersion {
 
 	public static enum Main implements IVersion {
 		/**
-		 * current production release
+		 * latest production release
 		 */
-		V2_4(V2_4_18),
+		V2_8(V2_8_3),
+
 		/**
-		 * development release
+		 * legacy production release
 		 */
 		V2_6(V2_6_14),
 
-		PRODUCTION(V2_4), DEVELOPMENT(V2_6), ;
+		PRODUCTION(V2_6), DEVELOPMENT(V2_8), ;
 
 		private final IVersion _latest;
 

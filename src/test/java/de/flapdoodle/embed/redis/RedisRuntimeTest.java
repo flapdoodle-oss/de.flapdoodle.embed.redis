@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.BitSize;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -35,6 +33,8 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
+import junit.framework.TestCase;
+import redis.clients.jedis.Jedis;
 
 // CHECKSTYLE:OFF
 public class RedisRuntimeTest extends TestCase {
@@ -80,7 +80,7 @@ public class RedisRuntimeTest extends TestCase {
 		// there is no osx 32bit version for v2.2.1 and above
 		String currentVersion = version.asInDownloadPath();
 		if ((platform == Platform.OS_X) && (bitsize == BitSize.B32)) {
-			if (currentVersion.equals(Version.V2_6_10.asInDownloadPath()))
+			if (currentVersion.equals(Version.V2_8_3.asInDownloadPath()))
 				return true;
 			if (currentVersion.equals(Version.V2_6_14.asInDownloadPath()))
 				return true;

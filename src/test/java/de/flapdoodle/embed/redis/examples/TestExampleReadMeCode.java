@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import junit.framework.TestCase;
-import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -59,6 +57,8 @@ import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
 import de.flapdoodle.embed.redis.tests.RedisDForTestsFactory;
+import junit.framework.TestCase;
+import redis.clients.jedis.Jedis;
 
 public class TestExampleReadMeCode extends TestCase {
 
@@ -388,7 +388,7 @@ public class TestExampleReadMeCode extends TestCase {
 	// ### Main Versions
 	public void testMainVersions() throws UnknownHostException, IOException {
 		// ->
-		IVersion version = Version.V2_4_18;
+		IVersion version = Version.V2_6_14;
 		// uses latest supported 2.2.x Version
 		version = Version.Main.V2_6;
 		// uses latest supported production version
