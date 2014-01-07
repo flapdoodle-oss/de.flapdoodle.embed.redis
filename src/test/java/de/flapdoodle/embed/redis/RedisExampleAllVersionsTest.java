@@ -20,8 +20,6 @@
  */
 package de.flapdoodle.embed.redis;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,10 +30,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.distribution.IVersion;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.distribution.Version;
+import redis.clients.jedis.Jedis;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test whether a race condition occurs between setup and tear down of setting
@@ -43,7 +43,7 @@ import de.flapdoodle.embed.redis.distribution.Version;
  * <p/>
  * This test will run a long time based on the download process for all redis
  * versions.
- * 
+ *
  * @author m.joehren
  */
 @RunWith(value = Parameterized.class)
@@ -58,9 +58,9 @@ public class RedisExampleAllVersionsTest {
 			// print out a PID and allow using --port argument. 2.4
 			// versions
 			// don't.
-			if (!version.equals(Version.Main.V2_4)) {
-				result.add(new Object[] { version });
-			}
+			// if (!version.equals(Version.Main.V2_4)) {
+			result.add(new Object[] { version });
+			// }
 		}
 		return result;
 	}

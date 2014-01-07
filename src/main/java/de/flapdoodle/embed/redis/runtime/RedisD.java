@@ -64,8 +64,7 @@ public class RedisD {
 				// daemonized, redis does not give any output..
 				// "--daemonize", "yes",//
 				"--pidfile", pidFile.getAbsolutePath(),//
-				"--dbfilename", dbFile.getAbsolutePath()//
-				));
+				"--dbfilename", dbFile.getName()));
 
 		return ret;
 	}

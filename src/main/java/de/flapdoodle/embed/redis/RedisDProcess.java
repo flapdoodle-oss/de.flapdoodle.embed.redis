@@ -61,9 +61,9 @@ public class RedisDProcess extends
 
 	}
 
-    public void setRedisCRuntimeConfig(IRuntimeConfig redisCRuntimeConfig) {
-        this.redisCRuntimeConfig = redisCRuntimeConfig;
-    }
+	public void setRedisCRuntimeConfig(IRuntimeConfig redisCRuntimeConfig) {
+		this.redisCRuntimeConfig = redisCRuntimeConfig;
+	}
 
 	@Override
 	protected void onBeforeProcess(IRuntimeConfig runtimeConfig)
@@ -86,11 +86,9 @@ public class RedisDProcess extends
 		// db file
 		File tmpDbFile;
 		if (config.getStorage().getDatabaseFile() != null) {
-			tmpDbFile = new File(dbDir, config.getStorage()
-					.getDatabaseFile());
+			tmpDbFile = new File(config.getStorage().getDatabaseFile());
 		} else {
-			tmpDbFile = new File(PropertyOrPlatformTempDir
-					.defaultInstance().asFile(), "dump.rdb");
+			tmpDbFile = new File("dump.rdb");
 			dbFileIsTemp = true;
 		}
 		this.dbFile = tmpDbFile;

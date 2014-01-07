@@ -20,9 +20,6 @@
  */
 package de.flapdoodle.embed.redis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,6 +28,9 @@ import de.flapdoodle.embed.process.distribution.BitSize;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.redis.distribution.Version;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class _TestPaths {
 
@@ -44,15 +44,14 @@ public class _TestPaths {
 	@Test
 	public void testDistributionPathsLinux() {
 		// v 2.4.18
-		checkPath(new Distribution(Version.V2_4_18, Platform.Linux,
+		checkPath(new Distribution(Version.V2_8_3, Platform.Linux,
 				BitSize.B64),
-				"/2.4.18_1/redis-dist-2.4.18_1-linux.tar.gz");
-		checkPath(new Distribution(Version.V2_4_18, Platform.Windows,
-				BitSize.B32),
-				"/2.4.18_1/redis-dist-2.4.18_1-windows.zip");
-		checkPath(new Distribution(Version.V2_4_18, Platform.OS_X,
+				"/2.8.3_1/redis-dist-2.8.3_1-linux.tar.gz");
+		checkPath(new Distribution(Version.V2_8_3, Platform.Windows,
+				BitSize.B32), "/2.8.3_1/redis-dist-2.8.3_1-windows.zip");
+		checkPath(new Distribution(Version.V2_8_3, Platform.OS_X,
 				BitSize.B64),
-				"/2.4.18_1/redis-dist-2.4.18_1-macos.tar.gz");
+				"/2.8.3_1/redis-dist-2.8.3_1-macos.tar.gz");
 		// v 2.6.14
 		checkPath(new Distribution(Version.V2_6_14, Platform.Linux,
 				BitSize.B64),
@@ -69,7 +68,7 @@ public class _TestPaths {
 	@Test(expected = IllegalArgumentException.class)
 	@Ignore
 	public void testDistributionPathsOSX() {
-		checkPath(new Distribution(Version.V2_6_10, Platform.OS_X,
+		checkPath(new Distribution(Version.V2_6_14, Platform.OS_X,
 				BitSize.B32), " ");
 	}
 
