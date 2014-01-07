@@ -28,14 +28,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.IVersion;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
-import de.flapdoodle.embed.redis.RedisCliExecutable;
 import de.flapdoodle.embed.redis.RedisCliStarter;
-import de.flapdoodle.embed.redis.config.AbstractRedisConfig.Net;
-import de.flapdoodle.embed.redis.config.AbstractRedisConfig.Timeout;
 import de.flapdoodle.embed.redis.config.RedisCliConfig;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  *
@@ -95,15 +96,25 @@ public class RedisC {
 		}
 
 		try {
-			RedisCliConfig redisCliConfig = new RedisCliConfig(
-					redisVersion, new Net(port), new Timeout(
-							WAITING_TIME_SHUTDOWN_IN_MS), true);
-			// set nested
-			redisCliConfig.nested();
-			RedisCliExecutable rediscliExe = runtime
-					.prepare(redisCliConfig);
-			rediscliExe.start();
-			return true;
+			try {
+				Jedis j = new Jedis(hostname.getHostName(), port);
+				String reply = j.shutdown();
+				if (StringUtils.isEmpty(reply)) {
+					return true;
+				} else {
+					logger.log(Level.SEVERE,
+							String.format(
+									"sendShutdown closing %s:%s; Got response from server %s",
+									hostname, port, reply));
+					return false;
+				}
+			} catch (JedisConnectionException e) {
+				logger.log(Level.WARNING,
+						String.format(
+								"sendShutdown closing %s:%s. No Service listening on address",
+								hostname, port), e);
+				return true;
+			}
 		} catch (Exception iox) {
 			logger.log(Level.SEVERE, String.format(
 					"sendShutdown closing %s:%s", hostname, port),
