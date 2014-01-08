@@ -41,10 +41,6 @@ public class ArtifactStores {
 		return artifactStore(Command.RedisD);
 	}
 
-	public static IArtifactStore redisCArtifactStore() {
-		return artifactStore(Command.RedisC);
-	}
-
 	private static IArtifactStore artifactStore(Command command) {
 		return builder(command).build();
 	}

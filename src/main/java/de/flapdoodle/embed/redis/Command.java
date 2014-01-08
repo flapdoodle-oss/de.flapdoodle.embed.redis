@@ -21,7 +21,7 @@
 package de.flapdoodle.embed.redis;
 
 public enum Command {
-	RedisC("redis-cli"), RedisD("redis-server");
+	RedisD("redis-server");
 
 	private final String commandName;
 
