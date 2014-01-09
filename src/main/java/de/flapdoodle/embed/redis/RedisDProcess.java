@@ -22,9 +22,18 @@ package de.flapdoodle.embed.redis;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -35,7 +44,9 @@ import de.flapdoodle.embed.process.io.Processors;
 import de.flapdoodle.embed.process.io.StreamToLineProcessor;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
+import de.flapdoodle.embed.process.runtime.AbstractProcess;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
+import de.flapdoodle.embed.redis.config.AbstractRedisConfig;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.SupportConfig;
 import de.flapdoodle.embed.redis.runtime.RedisD;
@@ -44,7 +55,7 @@ import de.flapdoodle.embed.redis.runtime.RedisD;
  *
  */
 public class RedisDProcess extends
-		AbstractRedisProcess<RedisDConfig, RedisDExecutable, RedisDProcess> {
+		AbstractProcess<RedisDConfig, RedisDExecutable, RedisDProcess> {
 
 	private static Logger logger = Logger.getLogger(RedisDProcess.class
 			.getName());
@@ -53,12 +64,101 @@ public class RedisDProcess extends
 	private File dbFile;
 	private boolean dbDirIsTemp;
 	private boolean dbFileIsTemp;
+	boolean stopped = false;
+	protected IRuntimeConfig redisCRuntimeConfig;
 
 	public RedisDProcess(Distribution distribution, RedisDConfig config,
 			IRuntimeConfig runtimeConfig,
 			RedisDExecutable redisdExecutable) throws IOException {
 		super(distribution, config, runtimeConfig, redisdExecutable);
+	}
 
+	protected Set<String> knownFailureMessages() {
+		HashSet<String> ret = new HashSet<String>();
+		ret.add("failed errno");
+		ret.add("ERROR:");
+		return ret;
+	}
+
+	@Override
+	protected void stopInternal() {
+
+		synchronized (this) {
+			if (!stopped) {
+
+				stopped = true;
+
+				logger.info("try to stop redisd");
+				if (!sendStopToRedisInstance()) {
+					logger.warning("could not stop redisd with command, try next");
+					if (!sendKillToProcess()) {
+						logger.warning("could not stop redisd, try next");
+						if (!sendTermToProcess()) {
+							logger.warning("could not stop redisd, try next");
+							if (!tryKillToProcess()) {
+								logger.warning("could not stop redisd the second time, try one last thing");
+							}
+						}
+					}
+				}
+
+				stopProcess();
+
+				deleteTempFiles();
+
+			}
+		}
+	}
+
+	protected final boolean sendStopToRedisInstance() {
+		return shutdownRedis(getConfig());
+	}
+
+	public static boolean shutdownRedis(AbstractRedisConfig config) {
+		try {
+			// ensure that we don't get into a stackoverflow when starting
+			// the artifact fails entirely
+			if (config.isNested()) {
+				logger.log(Level.INFO,
+						"Nested stop, won't execute redis process again");
+				return false;
+			}
+			InetAddress host = config.net().getServerAddress();
+			int port = config.net().getPort();
+			if (!host.isLoopbackAddress()) {
+				logger.log(Level.WARNING,
+						""
+								+ "---------------------------------------\n"
+								+ "Your localhost ("
+								+ host.getHostAddress()
+								+ ") is not a loopback adress\n"
+								+ "We can NOT send shutdown to redis, because it is denied from remote."
+								+ "---------------------------------------\n");
+				return false;
+			}
+			try {
+				Jedis j = new Jedis(host.getHostName(), port);
+				String reply = j.shutdown();
+				if (StringUtils.isEmpty(reply)) {
+					return true;
+				} else {
+					logger.log(Level.SEVERE,
+							String.format(
+									"sendShutdown closing %s:%s; Got response from server %s",
+									host, port, reply));
+					return false;
+				}
+			} catch (JedisConnectionException e) {
+				logger.log(Level.WARNING,
+						String.format(
+								"sendShutdown closing %s:%s. No Service listening on address",
+								host, port), e);
+				return true;
+			}
+		} catch (UnknownHostException e) {
+			logger.log(Level.SEVERE, "sendStop", e);
+		}
+		return false;
 	}
 
 	public void setRedisCRuntimeConfig(IRuntimeConfig redisCRuntimeConfig) {
@@ -108,9 +208,7 @@ public class RedisDProcess extends
 						pidFile()));
 	}
 
-	@Override
 	protected void deleteTempFiles() {
-		super.deleteTempFiles();
 
 		if ((dbDir != null) && (dbDirIsTemp) && (!Files.forceDelete(dbDir))) {
 			logger.warning("Could not delete temp db dir: " + dbDir);
