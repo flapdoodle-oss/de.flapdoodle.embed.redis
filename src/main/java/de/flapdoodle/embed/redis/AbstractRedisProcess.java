@@ -21,11 +21,14 @@
 package de.flapdoodle.embed.redis;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang3.StringUtils;
 
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -33,7 +36,8 @@ import de.flapdoodle.embed.process.runtime.AbstractProcess;
 import de.flapdoodle.embed.process.runtime.Executable;
 import de.flapdoodle.embed.process.runtime.IStopable;
 import de.flapdoodle.embed.redis.config.AbstractRedisConfig;
-import de.flapdoodle.embed.redis.runtime.RedisC;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 public abstract class AbstractRedisProcess<T extends AbstractRedisConfig, E extends Executable<T, P>, P extends IStopable>
 		extends AbstractProcess<T, E, P> {
@@ -93,21 +97,50 @@ public abstract class AbstractRedisProcess<T extends AbstractRedisConfig, E exte
 	}
 
 	protected final boolean sendStopToRedisInstance() {
+		return shutdownRedis(getConfig());
+	}
+
+	public static boolean shutdownRedis(AbstractRedisConfig config) {
 		try {
-			boolean result;
-			if (redisCRuntimeConfig == null) {
-				result = RedisC.sendShutdown(getConfig().version(),
-						getConfig().net().getServerAddress(),
-						getConfig().net().getPort(), getConfig()
-								.isNested());
-			} else {
-				result = RedisC.sendShutdown(getConfig().version(),
-						getConfig().net().getServerAddress(),
-						getConfig().net().getPort(), getConfig()
-								.isNested(),
-						redisCRuntimeConfig);
+			// ensure that we don't get into a stackoverflow when starting
+			// the artifact fails entirely
+			if (config.isNested()) {
+				logger.log(Level.INFO,
+						"Nested stop, won't execute redis process again");
+				return false;
 			}
-			return result;
+			InetAddress host = config.net().getServerAddress();
+			int port = config.net().getPort();
+			if (!host.isLoopbackAddress()) {
+				logger.log(Level.WARNING,
+						""
+								+ "---------------------------------------\n"
+								+ "Your localhost ("
+								+ host.getHostAddress()
+								+ ") is not a loopback adress\n"
+								+ "We can NOT send shutdown to redis, because it is denied from remote."
+								+ "---------------------------------------\n");
+				return false;
+			}
+			try {
+				Jedis j = new Jedis(host.getHostName(), port);
+				String reply = j.shutdown();
+				if (StringUtils.isEmpty(reply)) {
+					return true;
+				} else {
+					logger.log(Level.SEVERE,
+							String.format(
+									"sendShutdown closing %s:%s; Got response from server %s",
+									host, port, reply));
+					return false;
+				}
+			} catch (JedisConnectionException e) {
+				logger.log(Level.WARNING,
+						String.format(
+								"sendShutdown closing %s:%s. No Service listening on address",
+								host, port), e);
+				return true;
+			}
 		} catch (UnknownHostException e) {
 			logger.log(Level.SEVERE, "sendStop", e);
 		}
