@@ -32,8 +32,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.exceptions.JedisConnectionException;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.ISupportConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
@@ -50,6 +48,8 @@ import de.flapdoodle.embed.redis.config.AbstractRedisConfig;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.SupportConfig;
 import de.flapdoodle.embed.redis.runtime.RedisD;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 /**
  *
@@ -151,8 +151,8 @@ public class RedisDProcess extends
 			} catch (JedisConnectionException e) {
 				logger.log(Level.WARNING,
 						String.format(
-								"sendShutdown closing %s:%s. No Service listening on address",
-								host, port), e);
+								"sendShutdown closing %s:%s. No Service listening on address.\n%s",
+								host, port, e.getMessage()));
 				return true;
 			}
 		} catch (UnknownHostException e) {
