@@ -27,6 +27,7 @@ import java.net.UnknownHostException;
 import de.flapdoodle.embed.process.config.ExecutableProcessConfig;
 import de.flapdoodle.embed.process.distribution.IVersion;
 import de.flapdoodle.embed.process.runtime.Network;
+import de.flapdoodle.embed.redis.Command;
 
 public abstract class AbstractRedisConfig extends ExecutableProcessConfig {
 
@@ -35,7 +36,7 @@ public abstract class AbstractRedisConfig extends ExecutableProcessConfig {
 	protected boolean nested = false;
 
 	public AbstractRedisConfig(IVersion version, Net networt, Timeout timeout) {
-		super(version);
+		super(version, new SupportConfig(Command.RedisD));
 		this.network = networt;
 		this.timeout = timeout;
 	}

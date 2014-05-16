@@ -40,4 +40,9 @@ public class SupportConfig implements ISupportConfig {
 		return "https://github.com/flapdoodle-oss/de.flapdoodle.embed.redis/issues\n";
 	}
 
+	@Override
+	public String messageOnException(Class<?> context, Exception exception) {
+		return null;
+	}
+
 }
