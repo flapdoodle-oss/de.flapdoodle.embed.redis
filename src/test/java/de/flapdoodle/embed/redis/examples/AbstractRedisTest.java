@@ -41,7 +41,7 @@ public abstract class AbstractRedisTest extends TestCase {
 
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 		_redisdExe = runtime.prepare(new RedisDConfig(
-				Version.Main.DEVELOPMENT, 12345));
+				Version.Main.PRODUCTION, 12345));
 		_redisd = _redisdExe.start();
 
 		super.setUp();

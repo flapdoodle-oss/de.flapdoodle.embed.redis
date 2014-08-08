@@ -43,7 +43,7 @@ public class RedisdForTestsFactoryTest {
 
 	@BeforeClass
 	public static void setRedis() throws IOException {
-		testsFactory = RedisDForTestsFactory.with(Version.Main.DEVELOPMENT);
+		testsFactory = RedisDForTestsFactory.with(Version.Main.PRODUCTION);
 	}
 
 	@AfterClass

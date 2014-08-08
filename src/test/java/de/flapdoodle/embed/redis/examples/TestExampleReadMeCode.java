@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import junit.framework.TestCase;
+import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -57,8 +59,6 @@ import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
 import de.flapdoodle.embed.redis.tests.RedisDForTestsFactory;
-import junit.framework.TestCase;
-import redis.clients.jedis.Jedis;
 
 public class TestExampleReadMeCode extends TestCase {
 
@@ -67,7 +67,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ->
 		int port = 12345;
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT, port);
+				Version.Main.PRODUCTION, port);
 
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 
@@ -95,7 +95,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ->
 		int port = 12345;
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT, port);
+				Version.Main.PRODUCTION, port);
 
 		Command command = Command.RedisD;
 
@@ -142,8 +142,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ...
 		RedisDForTestsFactory factory = null;
 		try {
-			factory = RedisDForTestsFactory
-					.with(Version.Main.DEVELOPMENT);
+			factory = RedisDForTestsFactory.with(Version.Main.PRODUCTION);
 
 			Jedis jedis = factory.newJedis();
 			// adding a new key
@@ -184,7 +183,7 @@ public class TestExampleReadMeCode extends TestCase {
 	public void testCustomizeArtifactStorage() throws IOException {
 
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT, 12345);
+				Version.Main.PRODUCTION, 12345);
 
 		// ->
 		// ...
@@ -354,7 +353,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ...
 		int port = 12345;
 		RedisDConfig redisdConfig = new RedisDConfig(new GenericVersion(
-				"2.6.14_4"), port);
+				"2.6.14_5"), port);
 
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 		RedisDProcess redisd = null;
@@ -394,7 +393,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// uses latest supported production version
 		version = Version.Main.PRODUCTION;
 		// uses latest supported development version
-		version = Version.Main.DEVELOPMENT;
+		version = Version.Main.DEPRECATED;
 		// <-
 	}
 
@@ -417,7 +416,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ->
 		// ...
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT);
+				Version.Main.PRODUCTION);
 
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 

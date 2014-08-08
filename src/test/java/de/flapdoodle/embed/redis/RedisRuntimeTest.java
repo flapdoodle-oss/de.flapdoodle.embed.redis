@@ -87,7 +87,7 @@ public class RedisRuntimeTest extends TestCase {
 			if (currentVersion.equals(Version.Main.PRODUCTION
 					.asInDownloadPath()))
 				return true;
-			if (currentVersion.equals(Version.Main.DEVELOPMENT
+			if (currentVersion.equals(Version.Main.PRODUCTION
 					.asInDownloadPath()))
 				return true;
 		}
@@ -121,7 +121,7 @@ public class RedisRuntimeTest extends TestCase {
 
 		try {
 			redisd = runtime.prepare(new RedisDConfig(
-					Version.Main.DEVELOPMENT, port));
+					Version.Main.PRODUCTION, port));
 			timer.check("After redisd");
 			assertNotNull("redisd", redisd);
 			redisdProcess = redisd.start();

@@ -62,7 +62,7 @@ public class RedisDForTestsFactory {
 	 * @throws IOException
 	 */
 	public RedisDForTestsFactory() throws IOException {
-		this(Version.Main.DEVELOPMENT);
+		this(Version.Main.PRODUCTION);
 	}
 
 	/**

@@ -54,7 +54,7 @@ public class RedisExecutableTest extends TestCase {
 
 		for (int i = 0; i < loops; i++) {
 			RedisDConfig redisdConfig = new RedisDConfig(
-					Version.Main.DEVELOPMENT, 12345);
+					Version.Main.PRODUCTION, 12345);
 			_logger.info("Loop: " + i);
 			RedisDExecutable redisdExe = RedisDStarter.getInstance(
 					runtimeConfig).prepare(redisdConfig);
@@ -82,7 +82,7 @@ public class RedisExecutableTest extends TestCase {
 			InterruptedException {
 
 		RedisDConfig rediddConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT, 12346);
+				Version.Main.PRODUCTION, 12346);
 
 		IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder().defaults(
 				Command.RedisD).build();
@@ -109,7 +109,7 @@ public class RedisExecutableTest extends TestCase {
 	@Test
 	public void testIsRunning() throws InterruptedException, IOException {
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.DEVELOPMENT, 12345);
+				Version.Main.PRODUCTION, 12345);
 
 		IRuntimeConfig runtimeConfig = new RuntimeConfigBuilder().defaults(
 				Command.RedisD).build();
