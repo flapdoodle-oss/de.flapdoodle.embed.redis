@@ -4,7 +4,7 @@
  *   Martin Jöhren <m.joehren@googlemail.com>
  *
  * with contributions from
- * 	konstantin-ba@github,Archimedes Trajano	(trajano@github)
+ * 	konstantin-ba@github, Archimedes Trajano (trajano@github), Christian Bayer (chrbayer84@googlemail.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import junit.framework.TestCase;
+import redis.clients.jedis.Jedis;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.distribution.BitSize;
 import de.flapdoodle.embed.process.distribution.Distribution;
@@ -33,8 +35,6 @@ import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
-import junit.framework.TestCase;
-import redis.clients.jedis.Jedis;
 
 // CHECKSTYLE:OFF
 public class RedisRuntimeTest extends TestCase {
@@ -50,7 +50,8 @@ public class RedisRuntimeTest extends TestCase {
 		IRuntimeConfig config = defaultBuilder.build();
 
 		for (Platform platform : Platform.values()) {
-			if (platform == Platform.Solaris) {
+			if (platform == Platform.Solaris
+					|| platform == Platform.FreeBSD) {
 				continue;
 			}
 			for (IVersion version : Versions
