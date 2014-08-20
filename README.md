@@ -3,7 +3,6 @@
 
 We are now a github organisation. You are invited to participate. :)
 
-
 de.flapdoodle.embed.redis
 =========================
 
