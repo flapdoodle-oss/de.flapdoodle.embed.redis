@@ -22,6 +22,7 @@ package de.flapdoodle.embed.redis.config;
 
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
+import de.flapdoodle.embed.process.store.Downloader;
 import de.flapdoodle.embed.redis.Command;
 
 public class ArtifactStoreBuilder extends
@@ -33,6 +34,7 @@ public class ArtifactStoreBuilder extends
 		download().setDefault(
 				new DownloadConfigBuilder().defaultsForCommand(command)
 						.build());
+		downloader().setDefault(new Downloader());
 		return this;
 	}
 
@@ -42,6 +44,7 @@ public class ArtifactStoreBuilder extends
 		download().setDefault(
 				new DownloadConfigBuilder().defaultsForCommand(command)
 						.build());
+		downloader().setDefault(new Downloader());
 		// disable caching
 		useCache().setDefault(false);
 		return this;

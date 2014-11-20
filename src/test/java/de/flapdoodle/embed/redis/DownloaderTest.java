@@ -50,7 +50,6 @@ import de.flapdoodle.embed.process.store.Downloader;
  * Created with IntelliJ IDEA. User: m.joehren Date: 16.07.12 Time: 22:10 To
  * change this template use File | Settings | File Templates.
  */
-@Deprecated
 public class DownloaderTest {
 
 	private static final int LISTEN_PORT = 17171;
@@ -101,7 +100,8 @@ public class DownloaderTest {
 		initRuntime();
 		Distribution d = new Distribution(new GenericVersion("2.6.9"),
 				Platform.detect(), BitSize.B64);
-		File f = Downloader.download(dc, d);
+		Downloader downloader = new Downloader();
+		downloader.download(dc, d);
 	}
 
 	private void initRuntime() {
@@ -122,6 +122,7 @@ public class DownloaderTest {
 		initRuntime();
 		Distribution d = new Distribution(new GenericVersion("3013.1.1"),
 				Platform.detect(), BitSize.B64);
-		File f = Downloader.download(dc, d);
+		Downloader downloader = new Downloader();
+		downloader.download(dc, d);
 	}
 }
