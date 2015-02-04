@@ -37,6 +37,8 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.process.distribution.Distribution;
+import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.process.extract.IExtractedFileSet;
 import de.flapdoodle.embed.process.io.LogWatchStreamProcessor;
 import de.flapdoodle.embed.process.io.Processors;
@@ -45,8 +47,11 @@ import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.io.file.Files;
 import de.flapdoodle.embed.process.runtime.AbstractProcess;
 import de.flapdoodle.embed.process.runtime.ProcessControl;
+import de.flapdoodle.embed.process.runtime.Processes;
 import de.flapdoodle.embed.redis.config.AbstractRedisConfig;
+import de.flapdoodle.embed.redis.config.AbstractRedisConfig.Net;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
+import de.flapdoodle.embed.redis.config.SupportConfig;
 import de.flapdoodle.embed.redis.runtime.RedisD;
 
 /**
@@ -238,5 +243,49 @@ public class RedisDProcess extends
 
 	@Override
 	protected void cleanupInternal() {
+	}
+
+	public static void stopStaleProcess(File pidFile, IVersion version,
+			int port) throws IOException {
+		// try sending the redis shutdown command via API
+		if (shutdownRedis(RedisDConfig.getConfigInstance(version, new Net(
+				port)))) {
+			return;
+		}
+		try {
+			int pid = getPidFromFile(pidFile);
+			Platform platform = Distribution.detectFor(version)
+					.getPlatform();
+			synchronized (RedisDProcess.class) {
+				logger.info("try to stop redisd");
+
+				if (!Processes.killProcess(new SupportConfig(
+						Command.RedisD), platform,
+						StreamToLineProcessor.wrap(Processors
+								.console()), pid)) {
+					logger.warning("could not kill redisd, try next");
+					if (!Processes.termProcess(new SupportConfig(
+							Command.RedisD), platform,
+							StreamToLineProcessor.wrap(Processors
+									.console()), pid)) {
+						logger.warning("could not term redisd, try next");
+						if (!Processes
+								.tryKillProcess(
+										new SupportConfig(
+												Command.RedisD),
+										platform,
+										StreamToLineProcessor
+												.wrap(Processors
+														.console()),
+										pid)) {
+							logger.warning("could not stop redisd the third time, try one last thing");
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			// will throw if there is no pid file, ignore in this case
+		}
+
 	}
 }
