@@ -35,12 +35,19 @@ public enum Version implements IVersion {
 	/**
 	 * old 2.8 release
 	 */
-	V2_8_3("2.8.3_1"),
+	V2_8_13("2.8.13_1"),
 
 	/**
 	 * new 2.8 release
 	 */
-	V2_8_13("2.8.13_1"), ;
+	V2_8_19("2.8.19_1"),
+
+	/**
+	 * new 3.0 release
+	 */
+	@Deprecated
+	V3_0_04("3.0.0-rc4");
+	;
 
 	private final String specificVersion;
 
@@ -62,12 +69,12 @@ public enum Version implements IVersion {
 		/**
 		 * latest production release
 		 */
-		V2_8(V2_8_13),
+		V2_8(V2_8_19),
 
 		/**
 		 * old production release
 		 */
-		V2_8_OLD(V2_8_3),
+		V2_8_OLD(V2_8_13),
 
 		/**
 		 * legacy production release
