@@ -81,7 +81,7 @@ public class RedisRuntimeTest extends TestCase {
 		// there is no osx 32bit version for v2.2.1 and above
 		String currentVersion = version.asInDownloadPath();
 		if ((platform == Platform.OS_X) && (bitsize == BitSize.B32)) {
-			if (currentVersion.equals(Version.V2_8_3.asInDownloadPath()))
+			if (currentVersion.equals(Version.V2_8_13.asInDownloadPath()))
 				return true;
 			if (currentVersion.equals(Version.V2_6_14.asInDownloadPath()))
 				return true;
