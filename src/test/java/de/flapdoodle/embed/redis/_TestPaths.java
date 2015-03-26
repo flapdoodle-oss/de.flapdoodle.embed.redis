@@ -20,9 +20,6 @@
  */
 package de.flapdoodle.embed.redis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -31,6 +28,9 @@ import de.flapdoodle.embed.process.distribution.BitSize;
 import de.flapdoodle.embed.process.distribution.Distribution;
 import de.flapdoodle.embed.process.distribution.Platform;
 import de.flapdoodle.embed.redis.distribution.Version;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class _TestPaths {
 
@@ -48,8 +48,7 @@ public class _TestPaths {
 				BitSize.B64),
 				"/2.8.19_1/redis-dist-2.8.19_1-linux.tar.gz");
 		checkPath(new Distribution(Version.V2_8_19, Platform.Windows,
-				BitSize.B32),
-				"/2.8.19_1/redis-dist-2.8.19_1-windows.zip");
+				BitSize.B32), "/2.8.19_1/redis-dist-2.8.19_1-windows.zip");
 		checkPath(new Distribution(Version.V2_8_19, Platform.OS_X,
 				BitSize.B64),
 				"/2.8.19_1/redis-dist-2.8.19_1-macos.tar.gz");
