@@ -36,7 +36,7 @@ Stable (Maven Central Repository, Released: 10.12.2015 - wait 24hrs for [maven c
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.redis</artifactId>
-		<version>1.11.3</version>
+		<version>1.11.4</version>
 	</dependency>
 
 Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
@@ -44,6 +44,6 @@ Snapshots (Repository http://oss.sonatype.org/content/repositories/snapshots)
 	<dependency>
 		<groupId>de.flapdoodle.embed</groupId>
 		<artifactId>de.flapdoodle.embed.redis</artifactId>
-		<version>1.11.4-SNAPSHOT</version>
+		<version>1.11.5-SNAPSHOT</version>
 	</dependency>
 
