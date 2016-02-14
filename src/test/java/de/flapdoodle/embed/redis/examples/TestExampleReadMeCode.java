@@ -65,7 +65,7 @@ public class TestExampleReadMeCode extends TestCase {
 	// ### Usage
 	public void testStandard() throws UnknownHostException, IOException {
 		// ->
-		int port = 12345;
+		int port = Network.getFreeServerPort();
 		RedisDConfig redisdConfig = new RedisDConfig(
 				Version.Main.PRODUCTION, port);
 
@@ -76,7 +76,7 @@ public class TestExampleReadMeCode extends TestCase {
 			redisdExecutable = runtime.prepare(redisdConfig);
 			RedisDProcess redisd = redisdExecutable.start();
 
-			Jedis jedis = new Jedis("localhost", 12345);
+			Jedis jedis = new Jedis("localhost", port);
 			// adding a new key
 			jedis.set("key", "value");
 			// getting the key value
@@ -93,7 +93,7 @@ public class TestExampleReadMeCode extends TestCase {
 	public void testCustomRedisdFilename() throws UnknownHostException,
 			IOException {
 		// ->
-		int port = 12345;
+		int port = Network.getFreeServerPort();;
 		RedisDConfig redisdConfig = new RedisDConfig(
 				Version.Main.PRODUCTION, port);
 
@@ -117,7 +117,7 @@ public class TestExampleReadMeCode extends TestCase {
 			redisdExecutable = runtime.prepare(redisdConfig);
 			redisdExecutable.start();
 
-			Jedis jedis = new Jedis("localhost", 12345);
+			Jedis jedis = new Jedis("localhost", port);
 			// adding a new key
 			jedis.set("key", "value");
 			// getting the key value
@@ -182,8 +182,9 @@ public class TestExampleReadMeCode extends TestCase {
 	// ### Customize Artifact Storage
 	public void testCustomizeArtifactStorage() throws IOException {
 
+		int port = Network.getFreeServerPort();
 		RedisDConfig redisdConfig = new RedisDConfig(
-				Version.Main.PRODUCTION, 12345);
+				Version.Main.PRODUCTION, port);
 
 		// ->
 		// ...
@@ -351,7 +352,7 @@ public class TestExampleReadMeCode extends TestCase {
 	public void testCustomVersion() throws UnknownHostException, IOException {
 		// ->
 		// ...
-		int port = 12345;
+		int port = Network.getFreeServerPort();
 		RedisDConfig redisdConfig = new RedisDConfig(new GenericVersion(
 				"2.6.14_5"), port);
 
@@ -364,7 +365,7 @@ public class TestExampleReadMeCode extends TestCase {
 			redisd = redisdExecutable.start();
 
 			// <-
-			Jedis jedis = new Jedis("localhost", 12345);
+			Jedis jedis = new Jedis("localhost", port);
 			// adding a new key
 			jedis.set("key", "value");
 			// getting the key value
