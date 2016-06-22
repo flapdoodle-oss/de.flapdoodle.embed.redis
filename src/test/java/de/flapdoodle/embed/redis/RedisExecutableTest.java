@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.junit.Test;
 
 import de.flapdoodle.embed.process.config.IRuntimeConfig;
+import de.flapdoodle.embed.process.runtime.Network;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.config.RuntimeConfigBuilder;
 import de.flapdoodle.embed.redis.distribution.Version;
@@ -53,8 +54,9 @@ public class RedisExecutableTest extends TestCase {
 				Command.RedisD).build();
 
 		for (int i = 0; i < loops; i++) {
+			int port = Network.getFreeServerPort();
 			RedisDConfig redisdConfig = new RedisDConfig(
-					Version.Main.PRODUCTION, 12345);
+					Version.Main.PRODUCTION, port);
 			_logger.info("Loop: " + i);
 			RedisDExecutable redisdExe = RedisDStarter.getInstance(
 					runtimeConfig).prepare(redisdConfig);
@@ -62,7 +64,7 @@ public class RedisExecutableTest extends TestCase {
 				RedisDProcess redisd = redisdExe.start();
 
 				if (useRedis) {
-					Jedis jedis = new Jedis("localhost", 12345);
+					Jedis jedis = new Jedis("localhost", port);
 					// adding a new key
 					jedis.set("key", "value");
 					// getting the key value

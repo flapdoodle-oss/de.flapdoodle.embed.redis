@@ -31,6 +31,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import de.flapdoodle.embed.process.distribution.IVersion;
+import de.flapdoodle.embed.process.runtime.Network;
 import de.flapdoodle.embed.redis.config.RedisDConfig;
 import de.flapdoodle.embed.redis.distribution.Version;
 import redis.clients.jedis.Jedis;
@@ -65,7 +66,7 @@ public class RedisExampleAllVersionsTest {
 		return result;
 	}
 
-	private static final int PORT = 12345;
+	private int port;
 	private final IVersion redisVersion;
 	private RedisDExecutable redisdExe;
 	private RedisDProcess redisd;
@@ -77,14 +78,15 @@ public class RedisExampleAllVersionsTest {
 
 	@Before
 	public void setUp() throws Exception {
-
+		port=Network.getFreeServerPort();
+		
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 		redisdExe = runtime.prepare(new RedisDConfig(this.redisVersion,
-				PORT));
+				port));
 		redisd = redisdExe.start();
 
 		// Connecting to Redis on localhost
-		jedis = new Jedis("localhost", PORT);
+		jedis = new Jedis("localhost", port);
 	}
 
 	@After
