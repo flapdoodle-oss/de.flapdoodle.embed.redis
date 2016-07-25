@@ -20,55 +20,61 @@
  */
 package de.flapdoodle.embed.redis.config;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import de.flapdoodle.embed.process.config.store.IDownloadConfig;
 import de.flapdoodle.embed.process.io.progress.LoggingProgressListener;
+import de.flapdoodle.embed.process.io.progress.Slf4jProgressListener;
 import de.flapdoodle.embed.process.runtime.ICommandLinePostProcessor;
 import de.flapdoodle.embed.redis.Command;
+
+import java.util.logging.Level;
 
 public class RuntimeConfigBuilder extends
 		de.flapdoodle.embed.process.config.RuntimeConfigBuilder {
 
-	public RuntimeConfigBuilder defaultsWithLogger(Command command,
-			Logger logger) {
+	@Deprecated
+	public RuntimeConfigBuilder defaultsWithLogger(Command command, java.util.logging.Logger logger) {
 		defaults(command);
-		processOutput().setDefault(
-				RedisDProcessOutputConfig.getInstance(logger));
+		processOutput().overwriteDefault(RedisDProcessOutputConfig.getInstance(command, logger));
 
 		IDownloadConfig downloadConfig = new DownloadConfigBuilder()
 				.defaultsForCommand(command)
-				.progressListener(
-						new LoggingProgressListener(logger,
-								Level.FINE)).build();
+				.progressListener(new LoggingProgressListener(logger, Level.FINE))
+				.build();
 
-		artifactStore().overwriteDefault(
-				new ArtifactStoreBuilder().defaults(command)
-						.download(downloadConfig).build());
+		artifactStore().overwriteDefault(storeBuilder().defaults(command).download(downloadConfig).build());
+		return this;
+	}
+
+	public RuntimeConfigBuilder defaultsWithLogger(Command command, org.slf4j.Logger logger) {
+		defaults(command);
+		processOutput().overwriteDefault(RedisDProcessOutputConfig.getInstance(command, logger));
+
+		IDownloadConfig downloadConfig = new DownloadConfigBuilder()
+				.defaultsForCommand(command)
+				.progressListener(new Slf4jProgressListener(logger))
+				.build();
+
+		artifactStore().overwriteDefault(storeBuilder().defaults(command).download(downloadConfig).build());
 		return this;
 	}
 
 	public RuntimeConfigBuilder defaults(Command command) {
-		processOutput().setDefault(
-				RedisDProcessOutputConfig.getDefaultInstance());
-		commandLinePostProcessor().setDefault(
-				new ICommandLinePostProcessor.Noop());
-		artifactStore().setDefault(
-				new ArtifactStoreBuilder()
-						.defaultsWithoutCache(command).build());
+		processOutput().setDefault(RedisDProcessOutputConfig.getDefaultInstance(command));
+		commandLinePostProcessor().setDefault(new ICommandLinePostProcessor.Noop());
+		artifactStore().setDefault(storeBuilder().defaults(command).build());
 		return this;
 	}
 
 	public RuntimeConfigBuilder defaultsCli(Command command) {
-		processOutput().setDefault(
-				RedisDProcessOutputConfig.getDefaultInstance());
-		commandLinePostProcessor().setDefault(
-				new ICommandLinePostProcessor.Noop());
-		artifactStore().setDefault(
-				new ArtifactStoreBuilder()
-						.defaultsWithoutCache(command).build());
+		processOutput().setDefault(RedisDProcessOutputConfig.getDefaultInstance(command));
+		commandLinePostProcessor().setDefault(new ICommandLinePostProcessor.Noop());
+		artifactStore().setDefault(storeBuilder().defaults(command).build());
 		daemonProcess().setDefault(false);
 		return this;
 	}
+
+	private ExtractedArtifactStoreBuilder storeBuilder() {
+		return new ExtractedArtifactStoreBuilder();
+	}
+
 }

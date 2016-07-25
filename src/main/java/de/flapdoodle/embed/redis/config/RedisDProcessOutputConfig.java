@@ -20,8 +20,6 @@
  */
 package de.flapdoodle.embed.redis.config;
 
-import java.util.logging.Logger;
-
 import de.flapdoodle.embed.process.config.io.ProcessOutput;
 import de.flapdoodle.embed.redis.Command;
 
@@ -30,13 +28,17 @@ import de.flapdoodle.embed.redis.Command;
  */
 public class RedisDProcessOutputConfig {
 
-	public static ProcessOutput getDefaultInstance() {
-		return ProcessOutput.getDefaultInstance(Command.RedisD
-				.commandName());
+	public static ProcessOutput getDefaultInstance(Command command) {
+		return ProcessOutput.getDefaultInstance(command.commandName());
 	}
 
-	public static ProcessOutput getInstance(Logger logger) {
-		return ProcessOutput.getInstance(Command.RedisD.commandName(),
-				logger);
+	@Deprecated
+	public static ProcessOutput getInstance(Command command, java.util.logging.Logger logger) {
+		return ProcessOutput.getInstance(command.commandName(), logger);
 	}
+
+	public static ProcessOutput getInstance(Command command, org.slf4j.Logger logger) {
+		return ProcessOutput.getInstance(command.commandName(), logger);
+	}
+
 }
