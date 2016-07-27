@@ -25,7 +25,7 @@ import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
 import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
 import de.flapdoodle.embed.process.store.IArtifactStore;
 import de.flapdoodle.embed.redis.Command;
-import de.flapdoodle.embed.redis.PackagePaths;
+import de.flapdoodle.embed.redis.Paths;
 
 public class ArtifactStores {
 
@@ -48,7 +48,7 @@ public class ArtifactStores {
 	public static ArtifactStoreBuilder builder(Command command) {
 		return defaultBuilder().download(
 				new DownloadConfigBuilder().defaults()
-						.packageResolver(new PackagePaths(command))
+						.packageResolver(new Paths(command))
 						.build());
 	}
 

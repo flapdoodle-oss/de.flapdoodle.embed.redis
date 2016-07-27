@@ -32,13 +32,13 @@ import de.flapdoodle.embed.redis.distribution.Version;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class _TestPaths {
+public class TestPaths {
 
-	private PackagePaths paths;
+	private Paths paths;
 
 	@Before
 	public void setUp() throws Exception {
-		paths = new PackagePaths(Command.RedisD);
+		paths = new Paths(Command.RedisD);
 	}
 
 	@Test
@@ -46,22 +46,22 @@ public class _TestPaths {
 		// v 2.8.19
 		checkPath(new Distribution(Version.V2_8_19, Platform.Linux,
 				BitSize.B64),
-				"/2.8.19_1/redis-dist-2.8.19_1-linux.tar.gz");
+				"/2.8.19_1/redis-linux-2.8.19_1.tar.gz");
 		checkPath(new Distribution(Version.V2_8_19, Platform.Windows,
-				BitSize.B32), "/2.8.19_1/redis-dist-2.8.19_1-windows.zip");
+				BitSize.B32), "/2.8.19_1/redis-windows-2.8.19_1.zip");
 		checkPath(new Distribution(Version.V2_8_19, Platform.OS_X,
 				BitSize.B64),
-				"/2.8.19_1/redis-dist-2.8.19_1-macos.tar.gz");
+				"/2.8.19_1/redis-macos-2.8.19_1.tar.gz");
 		// v 2.6.14
 		checkPath(new Distribution(Version.V2_6_14, Platform.Linux,
 				BitSize.B64),
-				"/2.6.14_5/redis-dist-2.6.14_5-linux.tar.gz");
+				"/2.6.14_5/redis-linux-2.6.14_5.tar.gz");
 		checkPath(new Distribution(Version.V2_6_14, Platform.Windows,
 				BitSize.B32),
-				"/2.6.14_5/redis-dist-2.6.14_5-windows.zip");
+				"/2.6.14_5/redis-windows-2.6.14_5.zip");
 		checkPath(new Distribution(Version.V2_6_14, Platform.OS_X,
 				BitSize.B64),
-				"/2.6.14_5/redis-dist-2.6.14_5-macos.tar.gz");
+				"/2.6.14_5/redis-macos-2.6.14_5.tar.gz");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -86,7 +86,7 @@ public class _TestPaths {
 	@Test
 	public void testPaths() {
 		for (Version v : Version.values()) {
-			assertNotNull("" + v, PackagePaths.getVersionPart(v));
+			assertNotNull("" + v, Paths.getVersionPart(v));
 		}
 	}
 
