@@ -1,0 +1,113 @@
+plugins {
+    id 'com.jfrog.artifactory' version '4.4.0'
+}
+
+version = '1.11.5-SNAPSHOT'
+group = 'de.flapdoodle.embed'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'checkstyle'
+apply plugin: 'maven'
+
+ext {
+    gradleWrapperVersion = project.gradleWrapperVersion
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+eclipse {
+    jdt {
+        //if you want to alter the java versions (by default they are configured with gradle java plugin settings):
+        sourceCompatibility = JavaVersion.VERSION_1_6
+        targetCompatibility = JavaVersion.VERSION_1_6
+    }
+    classpath {
+        //customizing the classes output directory:
+        defaultOutputDir = file('build-eclipse')
+    }
+}
+
+checkstyle {
+    configFile = new File(rootDir, 'config/checkstyle.xml')
+}
+
+dependencies {
+    compile 'commons-io:commons-io:2.1'
+    compile 'de.flapdoodle.embed:de.flapdoodle.embed.process:1.50.2'
+    compile 'redis.clients:jedis:2.9.0'
+
+    testCompile 'junit:junit:4.10'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'com.google.guava:guava:18.0'
+    testCompile 'org.mortbay.jetty:jetty:6.1.25'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
+
+// we reset the last modified date of all test result files
+// for incremental builds which don't run the tests when no
+// chage has been made. otherwise jenkins will throw an exception then caused by
+// old test result files
+task jenkinsTest {
+    inputs.files test.outputs.files
+    doLast {
+        def timestamp = System.currentTimeMillis()
+        if (test.testResultsDir.exists())
+            test.testResultsDir.eachFile { it.lastModified = timestamp }
+    }
+}
+
+build.dependsOn(jenkinsTest)
+
+if (System.getenv('ARTIFACTORY_CONTEXT_URL')) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                pom.withXml {
+                    def pomNode = asNode()
+                    pomNode.dependencyManagement.replaceNode {}
+
+                    // simply remove dependencies without a version
+                    // version-less dependencies are handled with dependencyManagement
+                    // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                    pomNode.dependencies.dependency.findAll {
+                        it.version.text().isEmpty()
+                    }.each {
+                        it.replaceNode {}
+                    }
+                }
+                from components.java
+                def descriptor =
+                        artifacts = ["build/libs/${rootProject.name}-${version}.jar", sourcesJar]
+
+            }
+        }
+    }
+    artifactory {
+        contextUrl = System.getenv('ARTIFACTORY_CONTEXT_URL')
+
+        publish {
+            defaults {
+                publications('mavenJava')
+                publishArtifacts = true
+                publishPom = true
+
+            }
+            repository {
+                repoKey = "${version.contains('SNAPSHOT') ? (System.getenv('ARTIFACTORY_SNAPSHOT_REPO_KEY') ?: 'libs-snapshot-local') : (System.getenv('ARTIFACTORY_RELEASE_REPO_KEY') ?: 'libs-release-local')}"
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: 'admin'
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: 'password'
+            }
+        }
+    }
+}
