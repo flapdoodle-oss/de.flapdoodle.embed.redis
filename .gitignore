@@ -12,3 +12,4 @@
 .settings
 .externalToolBuilders
 .idea
+*.iml
