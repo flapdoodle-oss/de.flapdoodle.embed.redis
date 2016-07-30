@@ -43,6 +43,16 @@ public class RedisRuntimeTest extends TestCase {
 
 	}
 
+	public void testSingleVersion() throws IOException {
+
+		RuntimeConfigBuilder defaultBuilder = new RuntimeConfigBuilder()
+				.defaults(Command.RedisD);
+
+		IRuntimeConfig config = defaultBuilder.build();
+
+		check(config, new Distribution(Version.V3_2_1, Platform.Windows, BitSize.B32));
+	}
+
 	public void testDistributions() throws IOException {
 		RuntimeConfigBuilder defaultBuilder = new RuntimeConfigBuilder()
 				.defaults(Command.RedisD);

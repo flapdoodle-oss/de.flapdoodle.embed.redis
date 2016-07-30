@@ -32,13 +32,13 @@ import de.flapdoodle.embed.process.distribution.IVersion;
 /**
  *
  */
-public class PackagePaths implements IPackageResolver {
+public class Paths implements IPackageResolver {
 
-	protected static Logger logger = Logger.getLogger(PackagePaths.class
+	protected static Logger logger = Logger.getLogger(Paths.class
 			.getName());
 	private final Command command;
 
-	public PackagePaths(Command command) {
+	public Paths(Command command) {
 		this.command = command;
 	}
 
@@ -114,38 +114,7 @@ public class PackagePaths implements IPackageResolver {
 					+ distribution.getPlatform());
 		}
 
-		// switch (distribution.getBitsize()) {
-		// case B32:
-		// switch (distribution.getPlatform()) {
-		// case Windows:
-		// break;
-		// case Linux:
-		// case OS_X:
-		// default:
-		// throw new IllegalArgumentException(
-		// "32 bit supported only on Windows, platform is "
-		// + distribution.getPlatform());
-		// }
-		// break;
-		// case B64:
-		// switch (distribution.getPlatform()) {
-		// case Linux:
-		// case OS_X:
-		// break;
-		// case Windows:
-		// default:
-		// throw new IllegalArgumentException(
-		// "64 bit supported only on Linux and MacOS X, platform is "
-		// + distribution.getPlatform());
-		// }
-		// break;
-		// default:
-		// throw new IllegalArgumentException("Unknown BitSize "
-		// + distribution.getBitsize());
-		// }
-
-		return "/" + sversion + "/redis-dist-" + sversion + "-" + splatform
-				+ "." + sarchiveType;
+		return "/" + sversion + "/redis-" + splatform + "-" + sversion + "." + sarchiveType;
 	}
 
 	protected static String getVersionPart(IVersion version) {

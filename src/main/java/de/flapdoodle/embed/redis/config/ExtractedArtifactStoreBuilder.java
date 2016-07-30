@@ -20,42 +20,23 @@
  */
 package de.flapdoodle.embed.redis.config;
 
+import de.flapdoodle.embed.process.extract.NoopTempNaming;
 import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.PropertyOrPlatformTempDir;
-import de.flapdoodle.embed.process.store.ArtifactStoreBuilder;
-import de.flapdoodle.embed.process.store.IArtifactStore;
+import de.flapdoodle.embed.process.io.directories.UserHome;
+import de.flapdoodle.embed.process.store.Downloader;
 import de.flapdoodle.embed.redis.Command;
-import de.flapdoodle.embed.redis.Paths;
 
-public class ArtifactStores {
+public class ExtractedArtifactStoreBuilder extends de.flapdoodle.embed.process.store.ExtractedArtifactStoreBuilder {
 
-	private ArtifactStores() {
-		// no instance
-	}
-
-	public static IArtifactStore defaultArtifactStore() {
-		return artifactStore(Command.RedisD);
-	}
-
-	public static IArtifactStore redisDArtifactStore() {
-		return artifactStore(Command.RedisD);
-	}
-
-	private static IArtifactStore artifactStore(Command command) {
-		return builder(command).build();
-	}
-
-	public static ArtifactStoreBuilder builder(Command command) {
-		return defaultBuilder().download(
-				new DownloadConfigBuilder().defaults()
-						.packageResolver(new Paths(command))
-						.build());
-	}
-
-	public static ArtifactStoreBuilder defaultBuilder() {
-		return new ArtifactStoreBuilder().tempDir(
-				new PropertyOrPlatformTempDir()).executableNaming(
-				new UUIDTempNaming());
-	}
+    public ExtractedArtifactStoreBuilder defaults(Command command) {
+        extractDir().setDefault(new UserHome(".embedredis/extracted"));
+        extractExecutableNaming().setDefault(new NoopTempNaming());
+        tempDir().setDefault(new PropertyOrPlatformTempDir());
+        executableNaming().setDefault(new UUIDTempNaming());
+        download().setDefault(new DownloadConfigBuilder().defaultsForCommand(command).build());
+        downloader().setDefault(new Downloader());
+        return this;
+    }
 
 }

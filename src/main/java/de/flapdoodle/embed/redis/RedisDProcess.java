@@ -207,13 +207,13 @@ public class RedisDProcess extends
 	}
 
 	protected void deleteTempFiles() {
-
-		if ((dbDir != null) && (dbDirIsTemp) && (!Files.forceDelete(dbDir))) {
-			logger.warning("Could not delete temp db dir: " + dbDir);
-		}
+		// first try to delete db file, mostly it located inside db dir
 		if ((dbFile != null) && (dbFileIsTemp)
 				&& (!Files.forceDelete(dbFile))) {
 			logger.warning("Could not delete temp db file: " + dbFile);
+		}
+		if ((dbDir != null) && (dbDirIsTemp) && (!Files.forceDelete(dbDir))) {
+			logger.warning("Could not delete temp db dir: " + dbDir);
 		}
 	}
 
