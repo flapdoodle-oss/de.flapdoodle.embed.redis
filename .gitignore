@@ -13,3 +13,5 @@
 .externalToolBuilders
 .idea
 *.iml
+
+.gradle
