@@ -354,7 +354,7 @@ public class TestExampleReadMeCode extends TestCase {
 		// ...
 		int port = Network.getFreeServerPort();
 		RedisDConfig redisdConfig = new RedisDConfig(new GenericVersion(
-				"2.6.14_5"), port);
+				"3.2.1"), port);
 
 		RedisDStarter runtime = RedisDStarter.getDefaultInstance();
 		RedisDProcess redisd = null;

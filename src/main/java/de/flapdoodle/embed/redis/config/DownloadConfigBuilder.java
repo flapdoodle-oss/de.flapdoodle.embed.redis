@@ -20,11 +20,6 @@
  */
 package de.flapdoodle.embed.redis.config;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import de.flapdoodle.embed.process.config.store.IDownloadPath;
@@ -33,7 +28,7 @@ import de.flapdoodle.embed.process.extract.UUIDTempNaming;
 import de.flapdoodle.embed.process.io.directories.UserHome;
 import de.flapdoodle.embed.process.io.progress.StandardConsoleProgressListener;
 import de.flapdoodle.embed.redis.Command;
-import de.flapdoodle.embed.redis.PackagePaths;
+import de.flapdoodle.embed.redis.Paths;
 
 public class DownloadConfigBuilder extends
 		de.flapdoodle.embed.process.config.store.DownloadConfigBuilder {
@@ -41,7 +36,7 @@ public class DownloadConfigBuilder extends
 			.getLogger(DownloadConfigBuilder.class.getName());
 
 	public DownloadConfigBuilder packageResolverForCommand(Command command) {
-		packageResolver(new PackagePaths(command));
+		packageResolver(new Paths(command));
 		return this;
 	}
 
@@ -67,30 +62,9 @@ public class DownloadConfigBuilder extends
 
 		@Override
 		public String getPath(Distribution distribution) {
-			String redisDownloadUrl = null;
-			try {
-				Properties properties = new Properties();
-				properties.load(new FileInputStream(new File(
-						"server.properties")));
-				redisDownloadUrl = properties
-						.getProperty("redis.download.url");
-			} catch (FileNotFoundException e) {
-				logger.severe("Couldn't find server.properties in working directory.");
-				// wrap and re-throw
-				// TODO should probably let the method throw
-				throw new RuntimeException(e);
-			} catch (IOException e) {
-				logger.severe("Couldn't load server.properties from working directory.");
-				// wrap and re-throw
-				// TODO should probably let the method throw
-				throw new RuntimeException(e);
-			}
-			if (redisDownloadUrl == null) {
-				throw new IllegalArgumentException(
-						"Please specify a property 'redis.download.url'"
-								+ " with the redis distribution download URL.");
-			}
-			return redisDownloadUrl;
+			return "https://dl.bintray.com/donbeave/generic/redis-binaries";
 		}
+
 	}
+
 }

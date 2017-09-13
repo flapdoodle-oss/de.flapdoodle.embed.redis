@@ -1,11 +1,29 @@
-group = 'de.flapdoodle.embed.redis'
-version = '1.0-SNAPSHOT'
-project.ext.gradleVersion = "1.3"
+plugins {
+    id 'com.jfrog.artifactory' version '4.4.0'
+}
+
+version = '1.11.5-SNAPSHOT'
+group = 'de.flapdoodle.embed'
+
 apply plugin: 'java'
 apply plugin: 'eclipse'
-repositories { mavenCentral() }
-eclipse {
+apply plugin: 'idea'
+apply plugin: 'checkstyle'
+apply plugin: 'maven'
 
+ext {
+    gradleWrapperVersion = project.gradleWrapperVersion
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_6
+targetCompatibility = JavaVersion.VERSION_1_6
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+eclipse {
     jdt {
         //if you want to alter the java versions (by default they are configured with gradle java plugin settings):
         sourceCompatibility = JavaVersion.VERSION_1_6
@@ -16,19 +34,24 @@ eclipse {
         defaultOutputDir = file('build-eclipse')
     }
 }
+
+checkstyle {
+    configFile = new File(rootDir, 'config/checkstyle.xml')
+}
+
 dependencies {
-    testCompile 'junit:junit:4.10'
-    testCompile 'org.mongodb:mongo-java-driver:2.6.3'
-    testCompile 'org.mockito:mockito-core:1.9.0'
-    testCompile 'org.mortbay.jetty:jetty:6.1.25'
-    
     compile 'commons-io:commons-io:2.1'
-    compile 'de.flapdoodle.embed:de.flapdoodle.embed.process:1.27'
-    compile 'org.mongodb:mongo-java-driver:2.9.0'
+    compile 'de.flapdoodle.embed:de.flapdoodle.embed.process:1.50.2'
+    compile 'redis.clients:jedis:2.9.0'
+
+    testCompile 'junit:junit:4.10'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'com.google.guava:guava:18.0'
+    testCompile 'org.mortbay.jetty:jetty:6.1.25'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = project.ext.gradleVersion
+    gradleVersion = gradleWrapperVersion
 }
 
 // we reset the last modified date of all test result files
@@ -45,3 +68,46 @@ task jenkinsTest {
 }
 
 build.dependsOn(jenkinsTest)
+
+if (System.getenv('ARTIFACTORY_CONTEXT_URL')) {
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                pom.withXml {
+                    def pomNode = asNode()
+                    pomNode.dependencyManagement.replaceNode {}
+
+                    // simply remove dependencies without a version
+                    // version-less dependencies are handled with dependencyManagement
+                    // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                    pomNode.dependencies.dependency.findAll {
+                        it.version.text().isEmpty()
+                    }.each {
+                        it.replaceNode {}
+                    }
+                }
+                from components.java
+                def descriptor =
+                        artifacts = ["build/libs/${rootProject.name}-${version}.jar", sourcesJar]
+
+            }
+        }
+    }
+    artifactory {
+        contextUrl = System.getenv('ARTIFACTORY_CONTEXT_URL')
+
+        publish {
+            defaults {
+                publications('mavenJava')
+                publishArtifacts = true
+                publishPom = true
+
+            }
+            repository {
+                repoKey = "${version.contains('SNAPSHOT') ? (System.getenv('ARTIFACTORY_SNAPSHOT_REPO_KEY') ?: 'libs-snapshot-local') : (System.getenv('ARTIFACTORY_RELEASE_REPO_KEY') ?: 'libs-release-local')}"
+                username = System.getenv('ARTIFACTORY_USERNAME') ?: 'admin'
+                password = System.getenv('ARTIFACTORY_PASSWORD') ?: 'password'
+            }
+        }
+    }
+}
